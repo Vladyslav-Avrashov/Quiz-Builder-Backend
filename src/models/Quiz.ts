@@ -1,9 +1,19 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+export enum QuestionType {
+  SINGLE_CHOICE = 'SINGLE_CHOICE',
+  MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
+  BOOLEAN = 'BOOLEAN',
+  INPUT = 'INPUT',
+}
+
 export interface IQuestion {
   text: string;
-  options: string[];
-  correctAnswerIndex: number;
+  questionType: QuestionType;
+  options?: string[];
+  correctAnswerIndex?: number;
+  correctAnswerBoolean?: boolean;
+  correctAnswerIndices?: number[];
 }
 
 export interface IQuiz extends Document {
@@ -14,8 +24,15 @@ export interface IQuiz extends Document {
 const QuestionSchema: Schema = new Schema(
   {
     text: { type: String, required: true },
-    options: [{ type: String, required: true }],
-    correctAnswerIndex: { type: Number, required: true },
+    questionType: {
+      type: String,
+      enum: Object.values(QuestionType),
+      required: true,
+    },
+    options: [{ type: String }],
+    correctAnswerIndex: { type: Number },
+    correctAnswerBoolean: { type: Boolean },
+    correctAnswerIndices: [{ type: Number }],
   },
   { _id: false },
 );

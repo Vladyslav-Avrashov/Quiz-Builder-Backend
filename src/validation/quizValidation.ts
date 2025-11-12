@@ -1,39 +1,62 @@
 import Joi from 'joi';
+import { QuestionType } from '../models/Quiz.js';
 
-const questionSchema = Joi.object({
-  text: Joi.string().min(3).required().messages({
-    'string.empty': '"text" cannot be empty',
-    'string.min': '"text" must be at least 3 characters long',
-    'any.required': '"text" is a required field',
-  }),
+const optionsSchema = Joi.array().items(Joi.string().required()).min(2);
 
-  options: Joi.array()
-    .items(Joi.string().required())
-    .min(2)
-    .required()
-    .messages({
-      'array.base': '"options" must be an array',
-      'array.min': '"options" must contain at least 2 items',
-      'any.required': '"options" is a required field',
-    }),
+const singleChoiceSchema = Joi.object({
+  text: Joi.string().required(),
+  questionType: Joi.string().valid(QuestionType.SINGLE_CHOICE).required(),
+  options: optionsSchema.required(),
+  correctAnswerIndex: Joi.number()
+    .integer()
+    .min(0)
+    .max(Joi.ref('options', { adjust: (v) => (v ? v.length - 1 : 0) }))
+    .required(),
+});
 
-  correctAnswerIndex: Joi.number().integer().min(0).required().messages({
-    'number.base': '"correctAnswerIndex" must be a number',
-    'number.min': '"correctAnswerIndex" must be at least 0',
-    'any.required': '"correctAnswerIndex" is a required field',
-  }),
+const multipleChoiceSchema = Joi.object({
+  text: Joi.string().required(),
+  questionType: Joi.string().valid(QuestionType.MULTIPLE_CHOICE).required(),
+  options: optionsSchema.required(),
+  correctAnswerIndices: Joi.array()
+    .items(
+      Joi.number()
+        .integer()
+        .min(0)
+        .max(
+          Joi.ref('options', {
+            ancestor: 2,
+            adjust: (v) => (v ? v.length - 1 : 0),
+          }),
+        ),
+    )
+    .min(1)
+    .unique()
+    .required(),
+});
+
+const booleanSchema = Joi.object({
+  text: Joi.string().required(),
+  questionType: Joi.string().valid(QuestionType.BOOLEAN).required(),
+  correctAnswerBoolean: Joi.boolean().required(),
+});
+
+const inputSchema = Joi.object({
+  text: Joi.string().required(),
+  questionType: Joi.string().valid(QuestionType.INPUT).required(),
 });
 
 export const createQuizSchema = Joi.object({
-  title: Joi.string().min(3).required().messages({
-    'string.empty': '"title" cannot be empty',
-    'string.min': '"title" must be at least 3 characters long',
-    'any.required': '"title" is a required field',
-  }),
-
-  questions: Joi.array().items(questionSchema).min(1).required().messages({
-    'array.base': '"questions" must be an array',
-    'array.min': '"questions" must contain at least 1 question',
-    'any.required': '"questions" is a required field',
-  }),
+  title: Joi.string().min(3).required(),
+  questions: Joi.array()
+    .items(
+      Joi.alternatives().try(
+        singleChoiceSchema,
+        multipleChoiceSchema,
+        booleanSchema,
+        inputSchema,
+      ),
+    )
+    .min(1)
+    .required(),
 });
