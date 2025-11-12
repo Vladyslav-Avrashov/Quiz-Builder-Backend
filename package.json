@@ -1,0 +1,44 @@
+{
+  "name": "quiz-builder-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "nodemon src/index.ts",
+    "lint": "eslint src/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vladyslav-Avrashov/Quiz-Builder-Backend.git"
+  },
+  "keywords": [],
+  "author": "Vladyslav Avrashov <vladisloveavrashov@gmai.com>",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Vladyslav-Avrashov/Quiz-Builder-Backend/issues"
+  },
+  "homepage": "https://github.com/Vladyslav-Avrashov/Quiz-Builder-Backend#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/express": "^5.0.5",
+    "@types/http-errors": "^2.0.5",
+    "@types/mongoose": "^5.11.96",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "joi": "^18.0.1",
+    "mongoose": "^8.19.3"
+  }
+}
