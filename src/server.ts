@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import type { Express, Request, Response } from 'express';
 import quizRoutes from './routes/quizRoutes.js';
 import { getEnvVar } from './utils/getEnvVar.js';
@@ -7,6 +8,8 @@ import { errorHandler } from './middlewares/errorHandler.js';
 
 export const setupServer = () => {
   const app: Express = express();
+
+  app.use(cors());
 
   app.use(express.json());
 
